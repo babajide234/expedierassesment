@@ -1,16 +1,28 @@
-import { getCart, getCookie, getProductById } from "../util/functions";
-import { useQuery } from "react-query";
+import { deleteCart, getCart, getCookie, getProductById } from "../util/functions";
+import { useMutation, useQuery } from "react-query";
 import jwtDecode from "jwt-decode";
 import Container from "../components/Container";
 import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 
 const CartPage = () => {
     const token = getCookie('token');
     const decoded = jwtDecode(token);
 
-    const { data: cart, isLoading: isCartLoading} = useQuery(['cart'], () => getCart(decoded.sub),{
+    const { data: cart, isLoading: isCartLoading, refetch: refetchCart } = useQuery(['cart'], () => getCart(decoded.sub),{
         enabled: token!== "",
+    });
+
+    const deletecart = useMutation((payload) => deleteCart(payload),{
+        onSuccess: (data) => {
+            console.log(data)
+            toast.success('cart deleted successfully');
+            refetchCart()
+        },
+        onError: (error) => {
+            console.log(error);
+        }
     });
     const [productNames, setProductNames] = useState([]);
 
@@ -28,6 +40,7 @@ const CartPage = () => {
             fetchProductNames();
         }
     }, [cart]);
+
     const getproductName = async (id) => {
         const data = await getProductById(id);
         return data?.title;
@@ -59,7 +72,7 @@ const CartPage = () => {
                                         <div key={product.productId} className=" grid grid-cols-5 text-center justify-between items-center bg-neutral py-3 px-5 rounded-lg w-full mb-5">
                                             <h2 className="col-span-3">{productNames[index]}</h2>
                                                 <p className="">{product.quantity}</p>
-                                                <Button>Delete</Button>
+                                                <Button onClick={()=>deletecart.mutate(product.productId)} loading={deletecart.isLoading}>Delete</Button>
                                         </div>
                                     ))
                                 }

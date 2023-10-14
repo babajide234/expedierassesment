@@ -59,6 +59,16 @@ export const addToCartList = async (payload) => {
         }
     }
 
+    export const deleteCart = async (userId) => {
+        try {
+            const response = await instance.delete(`${cartRoute}/${userId}`);
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
 
 
   export function getCookie(name) {
