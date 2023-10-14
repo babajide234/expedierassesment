@@ -49,19 +49,19 @@ export const addToCartList = async (payload) => {
         console.log(error)
     }
 }
-export const getCart = async (userId) => {
-    try {
-        const response = await instance.get(`${cartRoute}/user/${userId}`);
-        const data = await response.data;
-        return data;
-    } catch (error) {
-        console.log(error)
+    export const getCart = async (userId) => {
+        try {
+            const response = await instance.get(`${cartRoute}/user/${userId}`);
+            const data = await response.data;
+            return data;
+        } catch (error) {
+            console.log(error)
+        }
     }
-}
 
 
 
-export function getCookie(name) {
+  export function getCookie(name) {
     const cookieValue = document.cookie
       .split("; ")
       .find((row) => row.startsWith(name + "="))
