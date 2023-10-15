@@ -2,7 +2,7 @@
 
 const Container = ({children}) => {
   return (
-    <div className=" w-[80%] mx-auto">
+    <div className=" w-[90%] md:w-[80%] mx-auto">
         {children}
     </div>
   )

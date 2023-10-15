@@ -49,7 +49,7 @@ const ProductPage = () => {
   return (
     <div className="w-full py-20">
         <Container>
-            <div className="mi-h-80 bg-slate-400 backdrop-blur-[30px] rounded-3xl py-5 px-10 flex gap-5">
+            <div className="min-h-80 bg-slate-400/20 backdrop-blur-[30px] rounded-3xl py-10 md:py-5 px-10 flex flex-col md:flex-row gap-5">
                 {
                     isProductLoading ? (
                         <>

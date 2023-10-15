@@ -4,9 +4,9 @@ import { useQuery } from "react-query"
 import { getCategories, getProductByCategories } from "../util/functions"
 import Container from "./Container";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { forwardRef, useState } from "react";
 
-const Store = () => {
+const Store = forwardRef(() => {
     const [activeTab, setActiveTab] = useState(0);
 
     const { data: categories, isLoading: isCategoryLoading} = useQuery({ queryKey: ['categories'], queryFn: getCategories });
@@ -20,10 +20,10 @@ const Store = () => {
     <div className="w-full pb-20">
         <Container>
             <div className="w-full">
-                <h1 className="text-[5rem] text-neutral font-bold text-center">Products</h1>
+                <h1 className=" text-[3rem] md:text-[5rem] text-neutral font-bold text-center">Products</h1>
             </div>
             <div className="w-full py-5">
-                <ul className=" grid grid-cols-4 gap-5 border-bottom border-secondary border-solid">
+                <ul className=" flex flex-wrap justify-center md:grid md:grid-cols-4 gap-5 border-bottom border-secondary border-solid">
                     { isCategoryLoading ? (
                          Array.from({ length: 4 }, (_, index) => (
                             <div
@@ -36,7 +36,7 @@ const Store = () => {
                             {
                                 categories?.map((category, index) => {
                                     return (
-                                        <li key={`${category}_${index}`} className=" w-full">
+                                        <li key={`${category}_${index}`} className="w-fit md:w-full">
                                             <CatButton active={activeTab === index} onClick={() => handleTabClick(index)}>{category}</CatButton>
                                         </li>
                                     )
@@ -76,11 +76,11 @@ const Store = () => {
         </Container>
     </div>
   )
-}
+});
 
 const CatButton = ({ onClick,active, children })=>{
     return(
-        <button className={`${ active ? 'bg-secondary':'' } hover:bg-secondary/70 transition-all hover:scale-[1.1] rounded-full ease-in-out w-full py-2 text-neutral font-medium capitalize`}  onClick={onClick}>{children}</button>
+        <button className={`${ active ? 'bg-secondary':'' } hover:bg-secondary/70 transition-all hover:scale-[1.1] rounded-full ease-in-out w-fit px-4 md:px-0 md:w-full py-2 text-neutral font-medium capitalize`}  onClick={onClick}>{children}</button>
     )
 }
 
@@ -88,7 +88,7 @@ const GetProducts = ({category})=>{
     const { data: products, isLoading: isProductLoading} = useQuery({ queryKey: ['products', category], queryFn: () => getProductByCategories(category) });
 
     return(
-        <div className="w-full grid grid-cols-4 gap-5">
+        <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-5">
             {isProductLoading   ? (
                  Array.from({ length: 4 }, (_, index) => (
                     <div
@@ -114,10 +114,10 @@ const GetProducts = ({category})=>{
 const ProductCard = ({ data })=>{
     return(
         <Link to={`/product/${data.id}`} className="w-full bg-neutral shadow-md rounded-xl duration-500 hover:scale-105 hover:shadow-xl">
-            <img src={data.image} alt="" className=" h-48 w-72 object-cover rounded-t-xl" />
+            <img src={data.image} alt="" className=" h-36 md:h-48 w-full md:w-72 object-cover rounded-t-xl" />
             <div className="px-4 py-3 w-full">
             <span className="text-gray-400 mr-3 uppercase text-xs">{data.category}</span>
-                <p className="text-lg font-bold text-black block truncate  capitalize">{data.title}</p>
+                <p className="text-md md:text-lg font-bold text-black block truncate  capitalize">{data.title}</p>
                 <Rating rating={data.rating}/>
                 <div className="flex items-center">
                     <span className="text-lg font-semibold text-black cursor-auto my-3">${data.price}</span>
@@ -126,7 +126,6 @@ const ProductCard = ({ data })=>{
         </Link>
     )
 }
-import React from 'react';
 
 export const Rating = ({ rating }) => {
     
@@ -144,7 +143,7 @@ export const Rating = ({ rating }) => {
     }
 
   return (
-    <div className="flex items-center">
+    <div className="flex flex-col md:flex-row items-start md:items-center">
       <div className="flex">{stars}</div>
       <span className="ml-2 text-gray-700">{rate.toFixed(1)}</span>
       <span className="ml-1 text-gray-500">({count} reviews)</span>

@@ -5,13 +5,18 @@ import Container from "../components/Container";
 import { Button } from "../components/Button";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import useAuthStore from "../store/authStore";
+import useUserStore from "../store/userStore";
 
 const CartPage = () => {
-    const token = getCookie('token');
-    const decoded = jwtDecode(token);
+    const user = useUserStore((state) => state.user);
+    const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
-    const { data: cart, isLoading: isCartLoading, refetch: refetchCart } = useQuery(['cart'], () => getCart(decoded.sub),{
-        enabled: token!== "",
+    const token = getCookie('token');
+    
+
+    const { data: cart, isLoading: isCartLoading, refetch: refetchCart } = useQuery(['cart'], () => getCart(user.sub),{
+        enabled: user !== null && user !== undefined,
     });
 
     const deletecart = useMutation((payload) => deleteCart(payload),{
@@ -24,6 +29,7 @@ const CartPage = () => {
             console.log(error);
         }
     });
+
     const [productNames, setProductNames] = useState([]);
 
     useEffect(() => {
@@ -62,14 +68,14 @@ const CartPage = () => {
                 ) : (
                     <>
                         <div className="w-full">
-                            <div className="grid grid-cols-5 colu text-center  justify-between items-center bg-neutral py-3 px-5 rounded-lg w-full mb-5">
-                                <h3 className="font-bold col-span-3 ">Product</h3>
+                            <div className="grid grid-cols-3 md:grid-cols-5  text-center  justify-between items-center bg-neutral py-3 px-2 md:px-5 rounded-lg w-full mb-5">
+                                <h3 className="font-bold md:col-span-3 ">Product</h3>
                                 <h3 className="font-bold ">Quantity</h3>
                                 <h3 className="font-bold ">Action</h3>
                             </div>
                                 {
                                     cart && cart[0]?.products.map( (product, index)=>(
-                                        <div key={product.productId} className=" grid grid-cols-5 text-center justify-between items-center bg-neutral py-3 px-5 rounded-lg w-full mb-5">
+                                        <div key={product.productId} className=" grid grid-cols-3 md:grid-cols-5 text-center justify-between items-center bg-neutral py-3 px-2 md:px-5 rounded-lg w-full mb-5">
                                             <h2 className="col-span-3">{productNames[index]}</h2>
                                                 <p className="">{product.quantity}</p>
                                                 <Button onClick={()=>deletecart.mutate(product.productId)} loading={deletecart.isLoading}>Delete</Button>
