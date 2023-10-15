@@ -3,11 +3,10 @@ import { Button } from "../components/Button"
 import { Input } from "../components/Forms"
 import { Formik, Form } from 'formik';
 import * as Yup from 'yup';
-import { Login, getCookie, setCookie } from "../util/functions";
+import { Login, setCookie } from "../util/functions";
 import { useNavigate } from "react-router";
 import jwtDecode from "jwt-decode";
 import { toast } from "react-toastify";
-import useUserStore from "../store/userStore";
 import useAuthStore from "../store/authStore";
 
 const LoginPage = () => {
@@ -15,11 +14,9 @@ const LoginPage = () => {
     const navigate = useNavigate(); 
     const setLogin = useAuthStore((state) => state.login);
 
-    // const cookies = new Cookies();
 
     const login = useMutation((payload) => Login(payload),{
         onSuccess: (data) => {
-            // console.log(data);
             const decoded = jwtDecode(data.token);
             setCookie('token', data.token, new Date(decoded.iat  * 1000) );
             toast.success('logged in successfully');
